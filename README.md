@@ -1,3 +1,6 @@
+[![CI](https://github.com/alessandrocandolini/advent-of-code2023/actions/workflows/ci.yml/badge.svg)](https://github.com/alessandrocandolini/advent-of-code2023/actions/workflows/ci.yml) [![codecov](https://codecov.io/gh/alessandrocandolini/advent-of-code2023/graph/badge.svg?token=I1bCJU2hQj)](https://codecov.io/gh/alessandrocandolini/advent-of-code2023) 
+
+
 # advent-of-code2023
 
 https://adventofcode.com/2023
