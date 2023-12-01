@@ -39,9 +39,18 @@ spec = describe "Day 1" $ do
   it "parsePart2 example 4"
     $ parsePart2 "aoneb2ttwone"
     `shouldBe` Right [One, Two, Two]
+
   it "parsePart2 example 5"
     $ parsePart2 "aoneon2eighthree"
     `shouldBe` Right [One, Two, Eight]
+
+  it "parsePart2 example 6"
+    $ parsePart2 "eightwothree"
+    `shouldBe` Right [Eight, Three]
+
+  it "parsePart2 example 6"
+    $ parsePart2 "threeeightwo"
+    `shouldBe` Right [Three, Eight]
 
   it "part2"
     $ part2

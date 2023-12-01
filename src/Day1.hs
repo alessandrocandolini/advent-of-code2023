@@ -2,6 +2,7 @@ module Day1 where
 
 import Control.Applicative (Alternative (many))
 import Data.Char (digitToInt, isDigit)
+import Data.Either.Combinators (rightToMaybe)
 import Data.Functor (($>))
 import Data.List (find)
 import Data.List.NonEmpty (NonEmpty)
@@ -13,7 +14,6 @@ import Data.Void (Void)
 import qualified Text.Megaparsec as P
 import qualified Text.Megaparsec.Char as P
 import Witherable (catMaybes, mapMaybe)
-import Data.Either.Combinators (rightToMaybe)
 
 program :: FilePath -> IO ()
 program = (=<<) print . fmap logic . T.readFile
@@ -64,15 +64,15 @@ part2 :: T.Text -> [Int]
 part2 = processLines . parseLines parser2
 
 parseLines :: Parser [Digit] -> T.Text -> [NonEmpty Digit]
-parseLines p = mapMaybe parseLine . T.lines where
+parseLines p = mapMaybe parseLine . T.lines
+ where
   parseLine = (=<<) N.nonEmpty . rightToMaybe . P.parse p ""
 
 processLines :: [NonEmpty Digit] -> [Int]
 processLines = fmap processLine
  where
-  processLine = read . foldMap (show . toInt) . tupleToList . firstAndLast
-  firstAndLast = (,) <$> N.head <*> N.last
-  tupleToList (a, b) = [a, b]
+  processLine = read . foldMap (show . toInt) . firstAndLast
+  firstAndLast l = [N.head l, N.last l]
 
 type Parser = P.Parsec Void T.Text
 type ParserError = P.ParseErrorBundle T.Text Void
