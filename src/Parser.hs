@@ -2,7 +2,7 @@
 
 module Parser where
 
-import Control.Applicative (Alternative (empty, (<|>)), some)
+import Control.Applicative (Alternative (empty, (<|>)), some, many)
 import Data.Char (isDigit, toLower)
 import Data.Foldable (asum)
 import Data.Functor (($>))
@@ -53,13 +53,22 @@ string :: String -> Parser String
 string = traverse char
 
 decimal :: Parser Int
-decimal = read <$> some anyChar
+decimal = read <$> some digit
 
 choice :: [Parser a] -> Parser a
 choice = asum
 
 retain :: Parser a -> Parser a
 retain (Parser p) = Parser $ \s -> fmap ((,) <$> const (drop 1 s) <*> snd) (p s)
+
+between :: Char -> Char -> Parser a -> Parser a
+between before after p = char before *> p <* char after
+
+sepBy :: Parser a -> Parser sep -> Parser [a]
+sepBy p sep = sepBy1 p sep <|> pure []
+
+sepBy1 :: Parser a -> Parser sep -> Parser [a]
+sepBy1 p sep = (:) <$> p <*> many (sep *> p)
 
 mkEnumParser:: (Enum a, Bounded a, Show a) => Parser a
 mkEnumParser = (choice . fmap (uncurry build . (\a -> (fmap toLower (show a), a))) ) [minBound .. maxBound] where

@@ -5,6 +5,7 @@ module Day2Spec where
 import qualified Data.Text as T
 import qualified Data.Text.IO as T
 import Day2
+import Parser
 import NeatInterpolation
 import Test.Hspec
 import Test.Hspec.QuickCheck
@@ -36,26 +37,33 @@ exampleGames =
       ]
   , Game
       3
-      [ Sample [(Green, 8), (Blue, 6)]
-      , Sample [(Green, 3), (Blue, 4), (Red, 1)]
-      , Sample [(Green, 1), (Blue, 1)]
+      [ Sample [(Green, 8), (Blue, 6), (Red, 20)]
+      , Sample [(Blue, 5), (Red, 4), (Green, 13)]
+      , Sample [(Green, 5), (Red, 1)]
       ]
   , Game
       4
-      [ Sample [(Blue, 1), (Green, 2)]
-      , Sample [(Green, 3), (Blue, 4), (Red, 1)]
-      , Sample [(Green, 1), (Blue, 1)]
+      [ Sample [(Green, 1), (Red, 3), (Blue, 6)]
+      , Sample [(Green, 3), (Red, 6)]
+      , Sample [(Green, 3), (Blue, 15), (Red, 14)]
       ]
   , Game
       5
-      [ Sample [(Blue, 1), (Green, 2)]
-      , Sample [(Green, 3), (Blue, 4), (Red, 1)]
-      , Sample [(Green, 1), (Blue, 1)]
+      [ Sample [(Red, 6), (Blue, 1), (Green, 3)]
+      , Sample [(Blue, 2), (Red, 1), (Green, 2)]
       ]
   ]
 
 spec :: Spec
 spec = describe "Day 2" $ do
+  it "parse sample"
+    $ parseAll sampleP " 3 blue, 4 red"
+    `shouldBe` Just (Sample [(Blue, 3), (Red, 4)])
+
+  it "parse gameId"
+    $ parseAll gameIdP "Game 11:"
+    `shouldBe` Just 11
+
   it "parseGames"
     $ parseGames exampleInput
     `shouldBe` exampleGames

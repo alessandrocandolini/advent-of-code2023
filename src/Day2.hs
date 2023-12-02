@@ -9,6 +9,8 @@ import qualified Data.Text.IO as T
 import Parser
 import Data.Functor (($>))
 import Control.Applicative ((<|>))
+import Data.Tuple (swap)
+import Witherable (mapMaybe)
 
 program :: FilePath -> IO ()
 program = (=<<) print . fmap logic . T.readFile
@@ -61,9 +63,19 @@ isGamePossible b (Game _ s) = all (isSamplePossible b) s
 colourP :: Parser Colour
 colourP = string "blue" $> Blue <|> string "red" $> Red <|> string "green" $> Green
 
-gameIdP = (string "Game " *> decimal <* string ": ")
+gameIdP :: Parser Int
+gameIdP = string "Game " *> decimal <* string ":"
 
--- Game 1: 1 green, 4 blue; 1 blue, 2 green, 1 red; 1 red, 1 green, 2 blue; 1 green, 1 red; 1 green; 1 green, 1 blue, 1 red
+sampleP :: Parser Sample
+sampleP = Sample <$> pairP `sepBy` char ',' where
+   pairP :: Parser (Colour, Int)
+   pairP = swap <$> ((,) <$> (space *> decimal <* space) <*> colourP)
+
+samplesP :: Parser [Sample]
+samplesP = sampleP `sepBy` char ';'
+
+gameP :: Parser Game
+gameP = Game <$> gameIdP <*> samplesP
 
 parseGames :: T.Text -> [Game]
-parseGames = undefined
+parseGames = mapMaybe (parseAll gameP . T.unpack) . T.lines
