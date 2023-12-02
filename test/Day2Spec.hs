@@ -5,8 +5,8 @@ module Day2Spec where
 import qualified Data.Text as T
 import qualified Data.Text.IO as T
 import Day2
-import Parser
 import NeatInterpolation
+import Parser
 import Test.Hspec
 import Test.Hspec.QuickCheck
 import Test.QuickCheck
@@ -69,9 +69,9 @@ spec = describe "Day 2" $ do
     `shouldBe` exampleGames
 
   it "part1 example"
-    $ part1 exampleInput
+    $ (part1 . parseGames) exampleInput
     `shouldBe` 8
 
   it "solve the puzzle" $ do
     input <- T.readFile "resources/input2"
-    logic input `shouldBe` Answer 2486
+    logic input `shouldBe` Answer 2486 87984
