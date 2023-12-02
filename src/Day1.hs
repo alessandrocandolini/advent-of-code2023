@@ -1,5 +1,6 @@
 module Day1 where
 
+import Control.Applicative (many)
 import Data.Char (digitToInt, isDigit)
 import Data.Functor (($>))
 import Data.List (find)
@@ -8,9 +9,8 @@ import qualified Data.List.NonEmpty as N
 import Data.Monoid ()
 import qualified Data.Text as T
 import qualified Data.Text.IO as T
-import Witherable (catMaybes, mapMaybe)
 import Parser
-import Control.Applicative (many)
+import Witherable (catMaybes, mapMaybe)
 
 program :: FilePath -> IO ()
 program = (=<<) print . fmap logic . T.readFile
@@ -83,7 +83,14 @@ digitFromNameP = choice $ fmap (buildParser <$> digitToString <*> id) allDigits
   buildParser s d = string s $> d
 
 parser1 :: Parser [Digit]
-parser1 = catMaybes <$> many (choice [Just <$> digitFromCharP, Nothing <$ anyChar])
+parser1 =
+  catMaybes
+    <$> many
+      ( choice
+          [ Just <$> digitFromCharP
+          , Nothing <$ anyChar
+          ]
+      )
 
 parser2 :: Parser [Digit]
 parser2 =
