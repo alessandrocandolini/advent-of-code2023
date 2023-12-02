@@ -1,8 +1,11 @@
+{-# LANGUAGE DeriveFunctor #-}
+
 module Day1 where
 
-import Control.Applicative (Alternative (many))
+import Control.Applicative (Alternative (many, (<|>)))
 import Data.Char (digitToInt, isDigit)
 import Data.Either.Combinators (rightToMaybe)
+import Data.Foldable (asum)
 import Data.Functor (($>))
 import Data.List (find)
 import Data.List.NonEmpty (NonEmpty)
@@ -11,9 +14,10 @@ import Data.Monoid ()
 import qualified Data.Text as T
 import qualified Data.Text.IO as T
 import Data.Void (Void)
+import qualified Data.Witherable as W
 import qualified Text.Megaparsec as P
 import qualified Text.Megaparsec.Char as P
-import Witherable (catMaybes, mapMaybe)
+import Witherable (Filterable, catMaybes, mapMaybe)
 
 program :: FilePath -> IO ()
 program = (=<<) print . fmap logic . T.readFile
@@ -43,7 +47,7 @@ digitFromChar c
   | isDigit c = find ((==) (digitToInt c) . toInt) allDigits
   | otherwise = Nothing
 
-toString :: Digit -> T.Text
+toString :: Digit -> String
 toString One = "one"
 toString Two = "two"
 toString Three = "three"
@@ -63,10 +67,15 @@ part1 = processLines . parseLines parser1
 part2 :: T.Text -> [Int]
 part2 = processLines . parseLines parser2
 
-parseLines :: Parser [Digit] -> T.Text -> [NonEmpty Digit]
-parseLines p = mapMaybe parseLine . T.lines
+parseLines1 :: T.Text -> [NonEmpty Digit]
+parseLines1 = mapMaybe parseLine . T.lines
  where
-  parseLine = (=<<) N.nonEmpty . rightToMaybe . P.parse p ""
+  parseLine = N.nonEmpty . mapMaybe digitFromChar . T.unpack
+
+parseLines :: Parser [Digit] -> T.Text -> [NonEmpty Digit]
+parseLines p = mapMaybe (parseLine . T.unpack) . T.lines
+ where
+  parseLine = (=<<) N.nonEmpty . parse p
 
 processLines :: [NonEmpty Digit] -> [Int]
 processLines = fmap processLine
@@ -74,26 +83,56 @@ processLines = fmap processLine
   processLine = read . foldMap (show . toInt) . firstAndLast
   firstAndLast l = [N.head l, N.last l]
 
-type Parser = P.Parsec Void T.Text
-type ParserError = P.ParseErrorBundle T.Text Void
+newtype Parser a = Parser {runParser :: String -> Maybe (String, a)} deriving (Functor)
 
-emap :: (a -> Maybe b) -> Parser a -> Parser b
-emap f = (=<<) (failIfNothing . f)
+parse :: Parser a -> String -> Maybe a
+parse p = fmap snd . W.filter (null . fst) . runParser p
+
+anyChar :: Parser Char
+anyChar = Parser p
  where
-  failIfNothing (Just a) = pure a
-  failIfNothing Nothing = fail "error parsing"
+  p [] = Nothing
+  p (c : t) = Just (t, c)
+
+instance Filterable Parser where
+  mapMaybe f (Parser p) = Parser $ mapMaybe (traverse f) . p
+
+char :: Char -> Parser Char
+char c = W.filter (c ==) anyChar
+
+instance Applicative Parser where
+  pure a = Parser $ \s -> Just (s, a)
+  (Parser p) <*> (Parser q) = Parser r
+   where
+    r s = do
+      (s', f) <- p s
+      (s'', a) <- q s'
+      return (s'', f a)
+
+instance Alternative Parser where
+  empty = Parser $ const Nothing
+  (Parser p) <|> (Parser q) = Parser $ \s -> p s <|> q s
+
+string :: String -> Parser String
+string = traverse char
+
+choice :: [Parser a] -> Parser a
+choice = asum
+
+retain :: Parser a -> Parser a
+retain (Parser p) = Parser $ \s -> fmap ((,) <$> const (drop 1 s) <*> snd) (p s)
 
 digitFromCharP :: Parser Digit
-digitFromCharP = emap digitFromChar P.digitChar
+digitFromCharP = mapMaybe digitFromChar anyChar
 
 digitFromNameP :: Parser Digit
-digitFromNameP = P.choice $ fmap (\d -> build (toString d) d) allDigits
+digitFromNameP = choice $ fmap (\d -> build (toString d) d) allDigits
  where
-  build :: T.Text -> Digit -> Parser Digit
-  build s d = P.string s $> d
+  build :: String -> Digit -> Parser Digit
+  build s d = string s $> d
 
 parser1 :: Parser [Digit]
-parser1 = catMaybes <$> many (P.choice [Just <$> digitFromCharP, Nothing <$ P.anySingle])
+parser1 = catMaybes <$> many (P.choice [Just <$> digitFromCharP, Nothing <$ anyChar])
 
 parser2 :: Parser [Digit]
-parser2 = catMaybes <$> many (P.choice [Just <$> digitFromCharP, Just <$> digitFromNameP, Nothing <$ P.anySingle])
+parser2 = catMaybes <$> many (P.choice [Just <$> (retain digitFromCharP), Just <$> (retain digitFromNameP), Nothing <$ anyChar])

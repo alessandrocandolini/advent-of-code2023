@@ -11,8 +11,8 @@ import Test.Hspec.QuickCheck
 import Test.QuickCheck
 import qualified Text.Megaparsec as P
 
-parsePart2 :: T.Text -> Either ParserError [Digit]
-parsePart2 = P.parse parser2 ""
+parsePart2 :: T.Text -> Maybe [Digit]
+parsePart2 = parse parser2 . T.unpack
 
 spec :: Spec
 spec = describe "Day 1" $ do
@@ -26,31 +26,31 @@ spec = describe "Day 1" $ do
 
   it "parsePart2 example 1"
     $ parsePart2 "123"
-    `shouldBe` Right [One, Two, Three]
+    `shouldBe` Just [One, Two, Three]
 
   it "parsePart2 example 2"
     $ parsePart2 "1a2b3"
-    `shouldBe` Right [One, Two, Three]
+    `shouldBe` Just [One, Two, Three]
 
   it "parsePart2 example 3"
     $ parsePart2 "one2twone"
-    `shouldBe` Right [One, Two, Two]
+    `shouldBe` Just [One, Two, Two, One]
 
   it "parsePart2 example 4"
     $ parsePart2 "aoneb2ttwone"
-    `shouldBe` Right [One, Two, Two]
+    `shouldBe` Just [One, Two, Two, One]
 
   it "parsePart2 example 5"
     $ parsePart2 "aoneon2eighthree"
-    `shouldBe` Right [One, Two, Eight]
+    `shouldBe` Just [One, Two, Eight, Three]
 
   it "parsePart2 example 6"
     $ parsePart2 "eightwothree"
-    `shouldBe` Right [Eight, Three]
+    `shouldBe` Just [Eight, Two, Three]
 
   it "parsePart2 example 6"
     $ parsePart2 "threeeightwo"
-    `shouldBe` Right [Three, Eight]
+    `shouldBe` Just [Three, Eight, Two]
 
   it "part2"
     $ part2
@@ -67,4 +67,4 @@ spec = describe "Day 1" $ do
 
   it "solve the puzzle" $ do
     input <- T.readFile "resources/input1"
-    logic input `shouldBe` (Answer 55712 55445)
+    logic input `shouldBe` (Answer 55712 55413)
