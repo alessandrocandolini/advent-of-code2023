@@ -1,10 +1,6 @@
-{-# LANGUAGE DeriveFunctor #-}
-
 module Day1 where
 
-import Control.Applicative (Alternative (empty, many, (<|>)))
 import Data.Char (digitToInt, isDigit)
-import Data.Foldable (asum)
 import Data.Functor (($>))
 import Data.List (find)
 import Data.List.NonEmpty (NonEmpty)
@@ -12,8 +8,9 @@ import qualified Data.List.NonEmpty as N
 import Data.Monoid ()
 import qualified Data.Text as T
 import qualified Data.Text.IO as T
-import Witherable (Filterable, catMaybes, mapMaybe)
-import qualified Witherable as W
+import Witherable (catMaybes, mapMaybe)
+import Parser
+import Control.Applicative (many)
 
 program :: FilePath -> IO ()
 program = (=<<) print . fmap logic . T.readFile
@@ -79,46 +76,7 @@ processLines = fmap processLine
   processLine = read . foldMap (show . toInt) . firstAndLast
   firstAndLast l = [N.head l, N.last l]
 
--- Digression: Parser combinators from scratch to support the retain custom combinator
-
-newtype Parser a = Parser {runParser :: String -> Maybe (String, a)} deriving (Functor)
-
-parseAll :: Parser a -> String -> Maybe a
-parseAll p = fmap snd . W.filter (null . fst) . runParser p
-
-anyChar :: Parser Char
-anyChar = Parser p
- where
-  p [] = Nothing
-  p (c : t) = Just (t, c)
-
-instance Filterable Parser where
-  mapMaybe f (Parser p) = Parser $ mapMaybe (traverse f) . p
-
-char :: Char -> Parser Char
-char c = W.filter (c ==) anyChar
-
-instance Applicative Parser where
-  pure a = Parser $ \s -> Just (s, a)
-  (Parser p) <*> (Parser q) = Parser r
-   where
-    r s = do
-      (s', f) <- p s
-      (s'', a) <- q s'
-      return (s'', f a)
-
-instance Alternative Parser where
-  empty = Parser $ const Nothing
-  (Parser p) <|> (Parser q) = Parser $ \s -> p s <|> q s
-
-string :: String -> Parser String
-string = traverse char
-
-choice :: [Parser a] -> Parser a
-choice = asum
-
-retain :: Parser a -> Parser a
-retain (Parser p) = Parser $ \s -> fmap ((,) <$> const (drop 1 s) <*> snd) (p s)
+-- parsing
 
 digitFromCharP :: Parser Digit
 digitFromCharP = mapMaybe digitFromChar anyChar

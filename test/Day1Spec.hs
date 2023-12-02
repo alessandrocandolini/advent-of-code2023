@@ -5,6 +5,7 @@ module Day1Spec where
 import qualified Data.Text as T
 import qualified Data.Text.IO as T
 import Day1
+import Parser (parseAll)
 import NeatInterpolation
 import Test.Hspec
 import Test.Hspec.QuickCheck
