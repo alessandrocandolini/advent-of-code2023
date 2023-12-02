@@ -2,7 +2,7 @@
 
 module Day1 where
 
-import Control.Applicative (Alternative (many, (<|>), empty))
+import Control.Applicative (Alternative (empty, many, (<|>)))
 import Data.Char (digitToInt, isDigit)
 import Data.Foldable (asum)
 import Data.Functor (($>))
@@ -12,8 +12,7 @@ import qualified Data.List.NonEmpty as N
 import Data.Monoid ()
 import qualified Data.Text as T
 import qualified Data.Text.IO as T
-import Data.Void (Void)
-import qualified Data.Witherable as W
+import qualified Witherable as W
 import Witherable (Filterable, catMaybes, mapMaybe)
 
 program :: FilePath -> IO ()
@@ -79,6 +78,8 @@ processLines = fmap processLine
  where
   processLine = read . foldMap (show . toInt) . firstAndLast
   firstAndLast l = [N.head l, N.last l]
+
+-- Digression: Parser combinators from scratch to support the retain custom combinator
 
 newtype Parser a = Parser {runParser :: String -> Maybe (String, a)} deriving (Functor)
 
