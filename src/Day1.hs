@@ -12,8 +12,8 @@ import qualified Data.List.NonEmpty as N
 import Data.Monoid ()
 import qualified Data.Text as T
 import qualified Data.Text.IO as T
-import qualified Witherable as W
 import Witherable (Filterable, catMaybes, mapMaybe)
+import qualified Witherable as W
 
 program :: FilePath -> IO ()
 program = (=<<) print . fmap logic . T.readFile
@@ -133,4 +133,12 @@ parser1 :: Parser [Digit]
 parser1 = catMaybes <$> many (choice [Just <$> digitFromCharP, Nothing <$ anyChar])
 
 parser2 :: Parser [Digit]
-parser2 = catMaybes <$> many (choice [Just <$> retain digitFromCharP, Just <$> retain digitFromNameP, Nothing <$ anyChar])
+parser2 =
+  catMaybes
+    <$> many
+      ( choice
+          [ Just <$> retain digitFromCharP
+          , Just <$> retain digitFromNameP
+          , Nothing <$ anyChar
+          ]
+      )
