@@ -124,7 +124,7 @@ digitFromCharP :: Parser Digit
 digitFromCharP = mapMaybe digitFromChar anyChar
 
 digitFromNameP :: Parser Digit
-digitFromNameP = choice $ fmap (\d -> build (toString d) d) allDigits
+digitFromNameP = choice $ fmap (build <$> toString <*> id) allDigits
  where
   build :: String -> Digit -> Parser Digit
   build s d = string s $> d
