@@ -12,7 +12,7 @@ import Test.QuickCheck
 import qualified Text.Megaparsec as P
 
 parsePart2 :: T.Text -> Maybe [Digit]
-parsePart2 = parse parser2 . T.unpack
+parsePart2 = parseAll parser2 . T.unpack
 
 spec :: Spec
 spec = describe "Day 1" $ do

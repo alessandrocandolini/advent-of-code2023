@@ -71,7 +71,7 @@ parseLines1 = mapMaybe parseLine . T.lines
 parseLines :: Parser [Digit] -> T.Text -> [NonEmpty Digit]
 parseLines p = mapMaybe (parseLine . T.unpack) . T.lines
  where
-  parseLine = (=<<) N.nonEmpty . parse p
+  parseLine = (=<<) N.nonEmpty . parseAll p
 
 processLines :: [NonEmpty Digit] -> [Int]
 processLines = fmap processLine
@@ -83,8 +83,8 @@ processLines = fmap processLine
 
 newtype Parser a = Parser {runParser :: String -> Maybe (String, a)} deriving (Functor)
 
-parse :: Parser a -> String -> Maybe a
-parse p = fmap snd . W.filter (null . fst) . runParser p
+parseAll :: Parser a -> String -> Maybe a
+parseAll p = fmap snd . W.filter (null . fst) . runParser p
 
 anyChar :: Parser Char
 anyChar = Parser p
