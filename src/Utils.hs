@@ -11,12 +11,10 @@ import Witherable (mapMaybe)
 groupOn :: (Ord k) => (a -> k) -> [a] -> Map k (NonEmpty a)
 groupOn f =
   M.fromList
-    . fmap flat
+    . fmap addKey
     . mapMaybe N.nonEmpty
     . groupBy compareByKey
-    . sortWith fst
-    . map (\a -> (f a, a))
+    . sortWith f
  where
-  compareByKey (k1, _) (k2, _) = k1 == k2
-  flat:: NonEmpty (k,a) -> (k, NonEmpty a)
-  flat kas = (fst (N.head kas), fmap snd kas)
+  compareByKey a1 a2 = f a1 == f a2
+  addKey as = (f (N.head as), as)
