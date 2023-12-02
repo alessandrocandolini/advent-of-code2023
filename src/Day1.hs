@@ -29,15 +29,12 @@ data Digit
   | Nine
   deriving (Eq, Show, Bounded, Enum)
 
-allDigits :: [Digit]
-allDigits = [minBound .. maxBound]
-
 toInt :: Digit -> Int
 toInt = (+ 1) . fromIntegral . fromEnum
 
 digitFromChar :: Char -> Maybe Digit
 digitFromChar c
-  | isDigit c = find ((==) (digitToInt c) . toInt) allDigits
+  | isDigit c = find ((==) (digitToInt c) . toInt) [minBound .. maxBound]
   | otherwise = Nothing
 
 logic :: T.Text -> Answer
