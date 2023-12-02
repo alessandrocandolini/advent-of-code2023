@@ -2,7 +2,6 @@ module Day1 where
 
 import Control.Applicative (many)
 import Data.Char (digitToInt, isDigit)
-import Data.Functor (($>))
 import Data.List (find)
 import Data.List.NonEmpty (NonEmpty)
 import qualified Data.List.NonEmpty as N
@@ -32,8 +31,8 @@ data Digit
 toInt :: Digit -> Int
 toInt = (+ 1) . fromIntegral . fromEnum
 
-digitFromChar :: Char -> Maybe Digit
-digitFromChar c
+fromChar :: Char -> Maybe Digit
+fromChar c
   | isDigit c = find ((==) (digitToInt c) . toInt) [minBound .. maxBound]
   | otherwise = Nothing
 
@@ -59,18 +58,18 @@ processLines = fmap processLine
 
 -- parsing
 
-digitFromCharP :: Parser Digit
-digitFromCharP = mapMaybe digitFromChar anyChar
+fromCharP :: Parser Digit
+fromCharP = mapMaybe fromChar anyChar
 
-digitFromNameP :: Parser Digit
-digitFromNameP = mkEnumParser
+fromNameP :: Parser Digit
+fromNameP = mkEnumParser
 
 parser1 :: Parser [Digit]
 parser1 =
   catMaybes
     <$> many
       ( choice
-          [ Just <$> digitFromCharP
+          [ Just <$> fromCharP
           , Nothing <$ anyChar
           ]
       )
@@ -80,8 +79,8 @@ parser2 =
   catMaybes
     <$> many
       ( choice
-          [ Just <$> digitFromCharP
-          , Just <$> retain digitFromNameP
+          [ Just <$> fromCharP
+          , Just <$> retain fromNameP
           , Nothing <$ anyChar
           ]
       )
