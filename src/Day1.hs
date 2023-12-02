@@ -2,9 +2,8 @@
 
 module Day1 where
 
-import Control.Applicative (Alternative (many, (<|>)))
+import Control.Applicative (Alternative (many, (<|>), empty))
 import Data.Char (digitToInt, isDigit)
-import Data.Either.Combinators (rightToMaybe)
 import Data.Foldable (asum)
 import Data.Functor (($>))
 import Data.List (find)
@@ -15,8 +14,6 @@ import qualified Data.Text as T
 import qualified Data.Text.IO as T
 import Data.Void (Void)
 import qualified Data.Witherable as W
-import qualified Text.Megaparsec as P
-import qualified Text.Megaparsec.Char as P
 import Witherable (Filterable, catMaybes, mapMaybe)
 
 program :: FilePath -> IO ()
@@ -132,7 +129,7 @@ digitFromNameP = choice $ fmap (\d -> build (toString d) d) allDigits
   build s d = string s $> d
 
 parser1 :: Parser [Digit]
-parser1 = catMaybes <$> many (P.choice [Just <$> digitFromCharP, Nothing <$ anyChar])
+parser1 = catMaybes <$> many (choice [Just <$> digitFromCharP, Nothing <$ anyChar])
 
 parser2 :: Parser [Digit]
-parser2 = catMaybes <$> many (P.choice [Just <$> (retain digitFromCharP), Just <$> (retain digitFromNameP), Nothing <$ anyChar])
+parser2 = catMaybes <$> many (choice [Just <$> retain digitFromCharP, Just <$> retain digitFromNameP, Nothing <$ anyChar])
