@@ -40,17 +40,6 @@ digitFromChar c
   | isDigit c = find ((==) (digitToInt c) . toInt) allDigits
   | otherwise = Nothing
 
-digitToString :: Digit -> String
-digitToString One = "one"
-digitToString Two = "two"
-digitToString Three = "three"
-digitToString Four = "four"
-digitToString Five = "five"
-digitToString Six = "six"
-digitToString Seven = "seven"
-digitToString Eight = "eight"
-digitToString Nine = "nine"
-
 logic :: T.Text -> Answer
 logic = Answer <$> sum . part1 <*> sum . part2
 
@@ -77,10 +66,7 @@ digitFromCharP :: Parser Digit
 digitFromCharP = mapMaybe digitFromChar anyChar
 
 digitFromNameP :: Parser Digit
-digitFromNameP = choice $ fmap (buildParser <$> digitToString <*> id) allDigits
- where
-  buildParser :: String -> Digit -> Parser Digit
-  buildParser s d = string s $> d
+digitFromNameP = mkEnumParser
 
 parser1 :: Parser [Digit]
 parser1 =

@@ -2,8 +2,10 @@
 
 module Parser where
 
-import Control.Applicative (Alternative (empty, (<|>)))
+import Control.Applicative (Alternative (empty, (<|>)), some)
+import Data.Char (isDigit, toLower)
 import Data.Foldable (asum)
+import Data.Functor (($>))
 import Data.Monoid ()
 import Witherable (Filterable, mapMaybe)
 import qualified Witherable as W
@@ -25,6 +27,15 @@ instance Filterable Parser where
 char :: Char -> Parser Char
 char c = W.filter (c ==) anyChar
 
+newline :: Parser Char
+newline = char '\n'
+
+space :: Parser Char
+space = char ' '
+
+digit :: Parser Char
+digit = W.filter isDigit anyChar
+
 instance Applicative Parser where
   pure a = Parser $ \s -> Just (s, a)
   (Parser p) <*> (Parser q) = Parser r
@@ -41,8 +52,16 @@ instance Alternative Parser where
 string :: String -> Parser String
 string = traverse char
 
+decimal :: Parser Int
+decimal = read <$> some anyChar
+
 choice :: [Parser a] -> Parser a
 choice = asum
 
 retain :: Parser a -> Parser a
 retain (Parser p) = Parser $ \s -> fmap ((,) <$> const (drop 1 s) <*> snd) (p s)
+
+mkEnumParser:: (Enum a, Bounded a, Show a) => Parser a
+mkEnumParser = (choice . fmap (uncurry build . (\a -> (fmap toLower (show a), a))) ) [minBound .. maxBound] where
+    build :: String -> a -> Parser a
+    build s a = string s $> a
