@@ -60,11 +60,6 @@ part1 = processLines . parseLines parser1
 part2 :: T.Text -> [Int]
 part2 = processLines . parseLines parser2
 
-parseLines1 :: T.Text -> [NonEmpty Digit]
-parseLines1 = mapMaybe parseLine . T.lines
- where
-  parseLine = N.nonEmpty . mapMaybe digitFromChar . T.unpack
-
 parseLines :: Parser [Digit] -> T.Text -> [NonEmpty Digit]
 parseLines p = mapMaybe (parseLine . T.unpack) . T.lines
  where
