@@ -68,9 +68,10 @@ spec = describe "Day 2" $ do
     $ parseGames exampleInput
     `shouldBe` exampleGames
 
-  prop ""
-    $ \l -> reverse (reverse l) == (l :: [Int])
+  it "part1 example"
+    $ part1 exampleInput
+    `shouldBe` 8
 
-  xit "solve the puzzle" $ do
+  it "solve the puzzle" $ do
     input <- T.readFile "resources/input2"
-    logic input `shouldBe` Answer
+    logic input `shouldBe` Answer 2486

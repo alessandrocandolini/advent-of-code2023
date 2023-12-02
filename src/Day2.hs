@@ -15,10 +15,10 @@ import Witherable (mapMaybe)
 program :: FilePath -> IO ()
 program = (=<<) print . fmap logic . T.readFile
 
-data Answer = Answer deriving (Eq, Show)
+data Answer = Answer Int deriving (Eq, Show)
 
 logic :: T.Text -> Answer
-logic = const Answer
+logic = Answer . part1
 
 bag :: Bag
 bag =
