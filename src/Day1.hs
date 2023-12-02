@@ -40,16 +40,16 @@ digitFromChar c
   | isDigit c = find ((==) (digitToInt c) . toInt) allDigits
   | otherwise = Nothing
 
-toString :: Digit -> String
-toString One = "one"
-toString Two = "two"
-toString Three = "three"
-toString Four = "four"
-toString Five = "five"
-toString Six = "six"
-toString Seven = "seven"
-toString Eight = "eight"
-toString Nine = "nine"
+digitToString :: Digit -> String
+digitToString One = "one"
+digitToString Two = "two"
+digitToString Three = "three"
+digitToString Four = "four"
+digitToString Five = "five"
+digitToString Six = "six"
+digitToString Seven = "seven"
+digitToString Eight = "eight"
+digitToString Nine = "nine"
 
 logic :: T.Text -> Answer
 logic = Answer <$> sum . part1 <*> sum . part2
@@ -61,9 +61,9 @@ part2 :: T.Text -> [Int]
 part2 = processLines . parseLines parser2
 
 parseLines :: Parser [Digit] -> T.Text -> [NonEmpty Digit]
-parseLines p = mapMaybe (parseLine . T.unpack) . T.lines
+parseLines p = mapMaybe parseLine . T.lines
  where
-  parseLine = (=<<) N.nonEmpty . parseAll p
+  parseLine = (=<<) N.nonEmpty . parseAll p . T.unpack
 
 processLines :: [NonEmpty Digit] -> [Int]
 processLines = fmap processLine
@@ -77,10 +77,10 @@ digitFromCharP :: Parser Digit
 digitFromCharP = mapMaybe digitFromChar anyChar
 
 digitFromNameP :: Parser Digit
-digitFromNameP = choice $ fmap (build <$> toString <*> id) allDigits
+digitFromNameP = choice $ fmap (buildParser <$> digitToString <*> id) allDigits
  where
-  build :: String -> Digit -> Parser Digit
-  build s d = string s $> d
+  buildParser :: String -> Digit -> Parser Digit
+  buildParser s d = string s $> d
 
 parser1 :: Parser [Digit]
 parser1 = catMaybes <$> many (choice [Just <$> digitFromCharP, Nothing <$ anyChar])
