@@ -137,7 +137,7 @@ parser2 =
   catMaybes
     <$> many
       ( choice
-          [ Just <$> retain digitFromCharP
+          [ Just <$> digitFromCharP
           , Just <$> retain digitFromNameP
           , Nothing <$ anyChar
           ]
