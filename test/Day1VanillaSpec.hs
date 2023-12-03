@@ -3,9 +3,9 @@
 module Day1VanillaSpec where
 
 import qualified Data.Text as T
-import Day1Vanilla
-import NeatInterpolation
-import Test.Hspec
+import Day1Vanilla ( parseAll, part1, part2, solve)
+import NeatInterpolation ( trimming )
+import Test.Hspec ( describe, it, shouldBe, Spec )
 
 spec :: Spec
 spec = describe "Day 1" $ do
@@ -45,6 +45,10 @@ spec = describe "Day 1" $ do
     $ parseAll "threeeightwo"
     `shouldBe` ['3', '8', '2']
 
+  it "parseAll example 7"
+    $ parseAll "oneighthreeighthreeightwone"
+    `shouldBe` ['1', '8', '3', '8', '3', '8', '2', '1']
+
   it "part2"
     $ part2 (T.unpack
       [trimming|
@@ -60,4 +64,4 @@ spec = describe "Day 1" $ do
 
   it "solve the puzzle" $ do
     input <- readFile "resources/input1"
-    logic input `shouldBe` (55712, 55413)
+    solve input `shouldBe` (55712, 55413)

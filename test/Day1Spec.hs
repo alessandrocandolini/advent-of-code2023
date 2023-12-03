@@ -5,12 +5,15 @@ module Day1Spec where
 import qualified Data.Text as T
 import qualified Data.Text.IO as T
 import Day1
+    ( Digit(One, Three, Eight, Two),
+      logic,
+      parser2,
+      part1,
+      part2,
+      Answer(Answer) )
 import Parser (parseAll)
-import NeatInterpolation
-import Test.Hspec
-import Test.Hspec.QuickCheck
-import Test.QuickCheck
-import qualified Text.Megaparsec as P
+import NeatInterpolation ( trimming )
+import Test.Hspec ( describe, it, shouldBe, Spec )
 
 parsePart2 :: T.Text -> Maybe [Digit]
 parsePart2 = parseAll parser2 . T.unpack
@@ -52,6 +55,10 @@ spec = describe "Day 1" $ do
   it "parsePart2 example 6"
     $ parsePart2 "threeeightwo"
     `shouldBe` Just [Three, Eight, Two]
+
+  it "parsePart2 example 7"
+    $ parsePart2 "oneighthreeighthreeightwone"
+    `shouldBe` Just [One, Eight, Three, Eight, Three, Eight, Two, One]
 
   it "part2"
     $ part2
