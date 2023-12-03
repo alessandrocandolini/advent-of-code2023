@@ -12,13 +12,13 @@ import Witherable (mapMaybe)
  -}
 
 program :: FilePath -> IO ()
-program = (=<<) print . fmap logic . readFile
+program = (=<<) print . fmap solve . readFile
 
-logic :: String -> (Int, Int)
-logic input = (result1, result2)
+solve :: String -> (Int, Int)
+solve input = (answer1, answer2)
  where
-  result1 = (sum . part1) input
-  result2 = (sum . part2) input
+  answer1 = (sum . part1) input
+  answer2 = (sum . part2) input
 
 part1 :: String -> [Int]
 part1 =
