@@ -2,14 +2,13 @@ module Day1Vanilla where
 
 import Data.Char (isDigit)
 import Data.List (tails)
-import Data.List.NonEmpty (NonEmpty)
 import qualified Data.List.NonEmpty as N
 import Witherable (mapMaybe)
 
-{- This module solves AOC 2023 Day 1 relying intentionally as much as possible  on built-in types (eg, Char) and vanilla techniques.
+{- This module solves AOC 2023 Day 1 relying as much as possible on built-in types (ie, Char) and vanilla techniques.
  - For a type safer solution (eg, modelling digits as ADT), that relies on parser combinators, see Day1.hs
  -
- - The preference is to avoid explicit recursion whenever possible: here it's absorbed behind `tails` (of comonadic inspiration), leaving the rest of the code non-recursive
+ - Explicit recursion is avoided, by relying on `tails` (of comonadic inspiration)
  -}
 
 program :: FilePath -> IO ()
@@ -33,7 +32,7 @@ part2 =
     . mapMaybe (N.nonEmpty . parseAll)
     . lines
 
-firstAndLast :: NonEmpty a -> [a]
+firstAndLast :: N.NonEmpty a -> [a]
 firstAndLast l = [N.head l, N.last l]
 
 parse :: String -> Maybe Char
