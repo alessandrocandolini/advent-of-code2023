@@ -17,32 +17,32 @@ spec = describe "Day 1" $ do
       treb7uchet|] )
     `shouldBe` [12, 38, 15, 77]
 
-  it "parse example 1"
-    $ parse "123"
+  it "parseAll example 1"
+    $ parseAll "123"
     `shouldBe` ['1', '2', '3']
 
-  it "parse example 2"
-    $ parse "1a2b3"
+  it "parseAll example 2"
+    $ parseAll "1a2b3"
     `shouldBe` ['1', '2', '3']
 
-  it "parse example 3"
-    $ parse "one2twone"
+  it "parseAll example 3"
+    $ parseAll "one2twone"
     `shouldBe` ['1', '2', '2', '1']
 
-  it "parse example 4"
-    $ parse "aoneb2ttwone"
+  it "parseAll example 4"
+    $ parseAll "aoneb2ttwone"
     `shouldBe` ['1', '2', '2', '1']
 
-  it "parse example 5"
-    $ parse "aoneon2eighthree"
+  it "parseAll example 5"
+    $ parseAll "aoneon2eighthree"
     `shouldBe` ['1', '2', '8', '3']
 
-  it "parse example 6"
-    $ parse "eightwothree"
+  it "parseAll example 6"
+    $ parseAll "eightwothree"
     `shouldBe` ['8', '2', '3']
 
-  it "parse example 6"
-    $ parse "threeeightwo"
+  it "parseAll example 6"
+    $ parseAll "threeeightwo"
     `shouldBe` ['3', '8', '2']
 
   it "part2"
