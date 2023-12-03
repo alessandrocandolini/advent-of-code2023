@@ -9,7 +9,7 @@ import Witherable (mapMaybe)
 {- This module solves AOC 2023 Day 1 relying intentionally as much as possible  on built-in types (eg, Char) and vanilla techniques.
  - For a type safer solution (eg, modelling digits as ADT), that relies on parser combinators, see Day1.hs
  -
- - The preference preference is to avoid explicit recursion whenever possible: here we absorb it behind `tails` (of comonadic inspiration), leaving all the code completely non recursive
+ - The preference is to avoid explicit recursion whenever possible: here it's absorbed behind `tails` (of comonadic inspiration), leaving the rest of the code non-recursive
  -}
 
 program :: FilePath -> IO ()
