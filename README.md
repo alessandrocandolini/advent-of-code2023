@@ -6,8 +6,8 @@
 https://adventofcode.com/2023
 
 ## Calendar
-- Day 1: [problem](https://adventofcode.com/2023/day/1) | [solution](src/Day1.hs) | [test](test/Day1Spec.hs) NOT DONE
-- Day 2: [problem](https://adventofcode.com/2023/day/2) | [solution](src/Day2.hs) | [test](test/Day2Spec.hs) NOT DONE
+- Day 1: [problem](https://adventofcode.com/2023/day/1) | [solution](src/Day1.hs) | [test](test/Day1Spec.hs) | [vanilla solution](src/Day1Vanilla.hs) | [test](test/Day1VanillaSpec.hs)  🌲
+- Day 2: [problem](https://adventofcode.com/2023/day/2) | [solution](src/Day2.hs) | [test](test/Day2Spec.hs) 🌲
 - Day 3: [problem](https://adventofcode.com/2023/day/3) | [solution](src/Day3.hs) | [test](test/Day3Spec.hs) NOT DONE
 - Day 4: [problem](https://adventofcode.com/2023/day/4) | [solution](src/Day4.hs) | [test](test/Day4Spec.hs) NOT DONE
 - Day 5: [problem](https://adventofcode.com/2023/day/5) | [solution](src/Day5.hs) | [test](test/Day5Spec.hs) NOT DONE
