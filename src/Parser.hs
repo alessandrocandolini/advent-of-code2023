@@ -2,7 +2,7 @@
 
 module Parser where
 
-import Control.Applicative (Alternative (empty, (<|>)), some, many)
+import Control.Applicative (Alternative (empty, (<|>)), many, some)
 import Data.Char (isDigit, toLower)
 import Data.Foldable (asum)
 import Data.Functor (($>))
@@ -70,7 +70,11 @@ sepBy p sep = sepBy1 p sep <|> pure []
 sepBy1 :: Parser a -> Parser sep -> Parser [a]
 sepBy1 p sep = (:) <$> p <*> many (sep *> p)
 
-mkEnumParser:: (Enum a, Bounded a, Show a) => Parser a
-mkEnumParser = (choice . fmap (uncurry build . (\a -> (fmap toLower (show a), a))) ) [minBound .. maxBound] where
-    build :: String -> a -> Parser a
-    build s a = string s $> a
+optional :: Parser a -> Parser (Maybe a)
+optional p = Just <$> p <|> pure Nothing
+
+mkEnumParser :: (Enum a, Bounded a, Show a) => Parser a
+mkEnumParser = (choice . fmap (uncurry build . (\a -> (fmap toLower (show a), a)))) [minBound .. maxBound]
+ where
+  build :: String -> a -> Parser a
+  build s a = string s $> a
