@@ -16,8 +16,10 @@ data Answer = Answer Int deriving (Eq, Show)
 logic :: T.Text -> Answer
 logic = Answer . answer1 . parseInput
 
+newtype CardId = CardId Int deriving (Eq, Show, Ord)
+
 data Card = Card
-  { cardId :: Int
+  { cardId :: CardId
   , winningNumbers :: S.Set Int
   , numbers :: S.Set Int
   }
@@ -27,11 +29,13 @@ answer1 :: [Card] -> Int
 answer1 = getSum . foldMap (Sum . score)
 
 score :: Card -> Int
-score = points . S.size . (S.intersection <$> winningNumbers <*> numbers)
+score = points . (S.intersection <$> winningNumbers <*> numbers)
  where
-  points n
-    | n <= 0 = 0
-    | otherwise = 2 ^ (n - 1)
+  points winning
+    | null winning = 0
+    | otherwise = 2 ^ (S.size winning - 1)
+
+allCards = undefined
 
 parseInput :: T.Text -> [Card]
 parseInput = W.mapMaybe (parseCard . T.unpack) . T.lines
@@ -40,7 +44,9 @@ parseCard :: String -> Maybe Card
 parseCard = parseAll cardP
 
 cardP :: Parser Card
-cardP = Card <$> (string "Card" *> some space *> decimal <* string ":" <* some space) <*> numbersP <*> (string " | " *> optional space *> numbersP)
+cardP = Card <$> (string "Card" *> spaces *> cardIdP <* string ":" <* spaces) <*> numbersP <*> (string " |" *> spaces *> numbersP)
+ where
+  cardIdP = CardId <$> decimal
 
 numbersP :: Parser (S.Set Int)
 numbersP = fmap S.fromList (decimal `sepBy` many space)

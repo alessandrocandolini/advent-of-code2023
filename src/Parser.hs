@@ -33,6 +33,9 @@ newline = char '\n'
 space :: Parser Char
 space = char ' '
 
+spaces :: Parser [Char]
+spaces = some space
+
 digit :: Parser Char
 digit = W.filter isDigit anyChar
 
