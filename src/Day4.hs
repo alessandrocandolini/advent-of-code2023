@@ -1,6 +1,9 @@
 module Day4 where
 
 import Control.Applicative (many, some)
+import Data.Fix (cata)
+import Data.Functor.Base (ListF (..))
+import qualified Data.IntMap as M
 import Data.Monoid
 import qualified Data.Set as S
 import qualified Data.Text as T
@@ -28,14 +31,21 @@ data Card = Card
 answer1 :: [Card] -> Int
 answer1 = getSum . foldMap (Sum . score)
 
+winners :: Card -> S.Set Int
+winners = S.intersection <$> winningNumbers <*> numbers
+
 score :: Card -> Int
-score = points . (S.intersection <$> winningNumbers <*> numbers)
+score = points . winners
  where
   points winning
     | null winning = 0
     | otherwise = 2 ^ (S.size winning - 1)
 
-allCards = undefined
+countAllCards :: [Card] -> Int
+countAllCards = sum . cata alg . S.toList . winners
+ where
+  alg Nil = []
+  alg (Cons m nn) = 1 + sum (take m nn) : nn
 
 parseInput :: T.Text -> [Card]
 parseInput = W.mapMaybe (parseCard . T.unpack) . T.lines
