@@ -4,6 +4,7 @@ import Control.Applicative (many, some)
 import Data.Fix (cata)
 import Data.Functor.Base (ListF (..))
 import qualified Data.IntMap as M
+import Data.List (tails)
 import Data.Monoid
 import qualified Data.Set as S
 import qualified Data.Text as T
@@ -14,10 +15,10 @@ import qualified Witherable as W
 program :: FilePath -> IO ()
 program = (=<<) print . fmap logic . T.readFile
 
-data Answer = Answer Int deriving (Eq, Show)
+data Answer = Answer Int Int deriving (Eq, Show)
 
 logic :: T.Text -> Answer
-logic = Answer . answer1 . parseInput
+logic = (Answer <$> answer1 <*> answer2) . parseInput
 
 newtype CardId = CardId Int deriving (Eq, Show, Ord)
 
@@ -41,11 +42,13 @@ score = points . winners
     | null winning = 0
     | otherwise = 2 ^ (S.size winning - 1)
 
-countAllCards :: [Card] -> Int
-countAllCards = sum . cata alg . S.toList . winners
- where
-  alg Nil = []
-  alg (Cons m nn) = 1 + sum (take m nn) : nn
+answer2 :: [Card] -> Int
+answer2 = sum . fmap countAllCards . tails . fmap (S.size . winners)
+
+countAllCards :: [Int] -> Int
+countAllCards [] = 0
+countAllCards [_] = 1
+countAllCards (x:xs) = 1 + sum (fmap countAllCards $ take x $ tails xs)
 
 parseInput :: T.Text -> [Card]
 parseInput = W.mapMaybe (parseCard . T.unpack) . T.lines

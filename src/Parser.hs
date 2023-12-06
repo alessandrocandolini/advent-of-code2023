@@ -10,7 +10,10 @@ import Data.Monoid ()
 import Witherable (Filterable, mapMaybe)
 import qualified Witherable as W
 
-newtype Parser a = Parser {runParser :: String -> Maybe (String, a)} deriving (Functor)
+newtype Parser a = Parser {runParser :: String -> Maybe (String, a)}
+
+instance Functor Parser where
+   fmap f (Parser p) = Parser $ fmap (fmap f) . p
 
 parseAll :: Parser a -> String -> Maybe a
 parseAll p = fmap snd . W.filter (null . fst) . runParser p
