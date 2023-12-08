@@ -9,7 +9,7 @@ import Witherable (mapMaybe, Filterable (catMaybes))
 {- This module solves AOC 2023 Day 1 relying as much as possible on built-in types (ie, Char) and vanilla techniques.
  - For a type safer solution (eg, modelling digits as ADT), that relies on parser combinators, see Day1.hs
  -
- - Explicit recursion is avoided, by relying on `tails` (of comonadic inspiration)
+ - Explicit recursion is avoided, by relying on `unfoldr` (the code is easy to be proven equivalent to use `tails` of comonadic inspiration, descrived in Day1Vanilla)
  -}
 
 program :: FilePath -> IO ()
@@ -57,3 +57,4 @@ parseAll = catMaybes . unfoldr step
   step :: String -> Maybe (Maybe Char, String)
   step [] = Nothing
   step s = Just (parse s, drop 1 s)
+
