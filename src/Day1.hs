@@ -1,8 +1,6 @@
 module Day1 where
 
 import Control.Applicative (many)
-import Data.Char (digitToInt, isDigit)
-import Data.List (find)
 import Data.List.NonEmpty (NonEmpty)
 import qualified Data.List.NonEmpty as N
 import Data.Monoid ()
@@ -32,9 +30,16 @@ toInt :: Digit -> Int
 toInt = (+ 1) . fromIntegral . fromEnum
 
 fromChar :: Char -> Maybe Digit
-fromChar c
-  | isDigit c = find ((==) (digitToInt c) . toInt) [minBound .. maxBound]
-  | otherwise = Nothing
+fromChar '1' = Just One
+fromChar '2' = Just Two
+fromChar '3' = Just Three
+fromChar '4' = Just Four
+fromChar '5' = Just Five
+fromChar '6' = Just Six
+fromChar '7' = Just Seven
+fromChar '8' = Just Eight
+fromChar '9' = Just Nine
+fromChar _   = Nothing
 
 logic :: T.Text -> Answer
 logic = Answer <$> sum . part1 <*> sum . part2

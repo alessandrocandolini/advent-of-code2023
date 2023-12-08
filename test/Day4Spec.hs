@@ -83,4 +83,4 @@ spec = describe "Day 4" $ do
 
   it "solve the puzzle" $ do
     input <- T.readFile "resources/input4"
-    logic input `shouldBe` Answer  23678 2
+    logic input `shouldBe` Answer  23678 15455663

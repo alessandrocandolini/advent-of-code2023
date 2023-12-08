@@ -46,8 +46,8 @@ answer2 :: [Card] -> Int
 answer2 = sum . fmap countAllCards . tails . fmap (S.size . winners)
 
 countAllCards :: [Int] -> Int
-countAllCards [] = 0
 countAllCards [_] = 1
+countAllCards [] = 0
 countAllCards (x:xs) = 1 + sum (fmap countAllCards $ take x $ tails xs)
 
 parseInput :: T.Text -> [Card]
