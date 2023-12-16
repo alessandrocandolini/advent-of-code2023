@@ -9,3 +9,9 @@ data Answer = Answer deriving (Eq, Show)
 
 logic :: T.Text -> Answer
 logic = const Answer
+
+zipWithNext :: [a] -> [(a,a)]
+zipWithNext a = zip a (tail a)
+
+diffWithNext :: Num a => [a] -> [a]
+diffWithNext as = zipWith (flip (-)) as (tail as)
