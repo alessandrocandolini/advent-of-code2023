@@ -19,12 +19,12 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        stack: ["2.13.1"]
-        ghc: ["9.4.7"]
+        stack: ["3.1.1"]
+        ghc: ["9.6.6"]
 
     steps:
 
-    - name: Checkout repo 
+    - name: Checkout repo
       uses: actions/checkout@v3
 
     - name: Restore from cache

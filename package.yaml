@@ -16,7 +16,6 @@ dependencies:
 - recursion-schemes
 - data-fix
 - pretty
-- tardis
 
 default-extensions:
 - OverloadedStrings
