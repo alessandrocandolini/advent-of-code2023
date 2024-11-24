@@ -13,9 +13,11 @@ dependencies:
 - optparse-applicative
 - witherable
 - neat-interpolation
+- pretty
 - recursion-schemes
 - data-fix
-- pretty
+- comonad
+- adjunctions
 
 default-extensions:
 - OverloadedStrings
